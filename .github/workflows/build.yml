@@ -1,0 +1,30 @@
+name: Compilar SensiPro
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar arquivos
+        uses: actions/checkout@v4
+
+      - name: Instalar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extrair projeto
+        run: |
+          unzip -o SensiPro_PlayStore_Projeto.zip -d projeto
+          find projeto -maxdepth 3 -type f | head -50
+
+      - name: Compilar AAB
+        working-directory: projeto/SensiProApp
+        run: gradle bundleRelease
+
+      - name: Salvar AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: SensiPro-AAB
+          path: projeto/SensiProApp/app/build/outputs/bundle/release/*.aab
