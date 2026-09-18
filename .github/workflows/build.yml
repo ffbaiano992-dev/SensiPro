@@ -19,6 +19,13 @@ jobs:
           unzip -o SensiPro_PlayStore_Projeto.zip -d projeto
           find projeto -maxdepth 3 -type f | head -50
 
+      - name: Configurar AndroidX
+        run: |
+          mkdir -p projeto/SensiProApp
+          touch projeto/SensiProApp/gradle.properties
+          echo "android.useAndroidX=true" >> projeto/SensiProApp/gradle.properties
+          echo "android.enableJetifier=true" >> projeto/SensiProApp/gradle.properties
+
       - name: Compilar AAB
         working-directory: projeto/SensiProApp
         run: gradle bundleRelease
