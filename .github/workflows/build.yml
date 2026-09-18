@@ -26,9 +26,20 @@ jobs:
           echo "android.useAndroidX=true" >> projeto/SensiProApp/gradle.properties
           echo "android.enableJetifier=true" >> projeto/SensiProApp/gradle.properties
 
+      - name: Corrigir Kotlin
+        run: |
+          cat > projeto/kotlin-fix.gradle <<'EOF'
+          allprojects {
+            configurations.configureEach {
+              exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
+              exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
+            }
+          }
+          EOF
+
       - name: Compilar AAB
         working-directory: projeto/SensiProApp
-        run: gradle bundleRelease
+        run: gradle -I ../kotlin-fix.gradle bundleRelease
 
       - name: Salvar AAB
         uses: actions/upload-artifact@v4
